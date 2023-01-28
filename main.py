@@ -3,7 +3,7 @@ import discord
 from discord.ext import commands
 import os
 import aiohttp
-
+import asyncio
 
 class MyBot(commands.Bot):
     def __init__(self):
