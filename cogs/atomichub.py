@@ -1,8 +1,6 @@
 import discord
 import requests
-import DiscordUtils
 from discord.ext import commands
-import json
 import asyncio
 
 
