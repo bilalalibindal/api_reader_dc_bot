@@ -9,7 +9,7 @@ import asyncio
 class alcor(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.atomichub_collection_url = "https://wax-test.atomichub.io/explorer/collection/wax-testnet/"
+        self.atomichub_collection_url = "https://wax.atomichub.io/explorer/collection/wax-mainnet/"
         self.atomichub_api_url = "https://test.wax.api.atomicassets.io/atomicassets/v1/collections?page=1&limit=1&order=desc&sort=created"
         self.common_img_url = "https://resizer.atomichub.io/images/v1/preview?ipfs=QmYeWdTRTEePZasagQaT4UkuRbfe1sPvyw47PZrroba9tH&size=370"
         self.collection_img_url = "https://resizer.atomichub.io/images/v1/preview?ipfs="
