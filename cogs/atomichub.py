@@ -81,7 +81,7 @@ class alcor(commands.Cog):
 
                 await channel.send(embed=embed)
                 self.old_collection_name = self.collection_name
-            await asyncio.sleep(3)  # sleep for 5 minutes
+            await asyncio.sleep(60)  # sleep for 5 minutes
 
     @commands.Cog.listener()
     async def on_ready(self):
