@@ -92,8 +92,3 @@ class alcor(commands.Cog):
 async def setup(bot):
     # Add cog to bot.
     await bot.add_cog(alcor(bot))
-
-
-async def setup(bot):
-    # Add cog to bot.
-    await bot.add_cog(alcor(bot))
