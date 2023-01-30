@@ -9,6 +9,7 @@ import asyncio
 class alcor(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.discord_server = 1015168172753702912
         self.atomichub_collection_url = "https://wax.atomichub.io/explorer/collection/wax-mainnet/"
         self.atomichub_api_url = "https://wax.api.atomicassets.io/atomicassets/v1/collections?page=1&limit=1&order=desc&sort=created"
         self.common_img_url = "https://resizer.atomichub.io/images/v1/preview?ipfs=QmYeWdTRTEePZasagQaT4UkuRbfe1sPvyw47PZrroba9tH&size=370"
@@ -58,7 +59,7 @@ class alcor(commands.Cog):
             if self.collection_name != self.old_collection_name:
                 self.collection_img = self.check_img()
                 self.collection_url = self.check_url()
-                guild = self.bot.get_guild(1068249104406290572)
+                guild = self.bot.get_guild(self.discord_server)
                 channel = discord.utils.get(guild.channels, name="atomichub")
                 embed = discord.Embed(
                     title=f"NEW ATOMICHUB LISTING",
