@@ -7,10 +7,10 @@ import aiohttp
 class MyBot(commands.Bot):
     def __init__(self):
         self.discord_server = 1015168172753702912
-        self.application_id = 1004415803703177247
+        #self.application_id = 1004415803703177247
         super().__init__(command_prefix=".",
                          intents=discord.Intents.all(),
-                         application_id=self.application_id)
+                         application_id=1004415803703177247)
 
     async def setup_hook(self):
         self.session = aiohttp.ClientSession()
