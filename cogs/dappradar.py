@@ -140,7 +140,7 @@ class dappradar(commands.Cog):
             project_id_list = self.get_project_ids()
             for id in project_id_list:
                 if self.is_new_project(id):
-                    guild = self.bot.get_guild(1068249104406290572)
+                    guild = self.bot.get_guild(1015168172753702912)
                     channel = discord.utils.get(guild.channels, name="dappradar")
                     logo = self.get_project_variable_by_dapp_id(id, 'logo')
                     common_logo = "https://raw.githubusercontent.com/dappradar/tokens/main/ethereum/0x44709a920fccf795fbc57baa433cc3dd53c44dbe/logo.png"
