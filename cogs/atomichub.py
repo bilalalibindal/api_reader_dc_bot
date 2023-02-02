@@ -5,11 +5,14 @@ import asyncio
 import json
 
 
-# "https://wax.api.atomicassets.io/atomicassets/v1/collections?page=1&limit=5&order=desc&sort=created"
 class atomichub(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.api_link = "https://test.wax.api.atomicassets.io/atomicassets/v1/collections?page=1&limit=5&order=desc&sort=created"
+        self.api_link = "https://wax.api.atomicassets.io/atomicassets/v1/collections?page=1&limit=5&order=desc&sort=created"
+
+    @commands.command()
+    async def clear(self, ctx, limit: int):
+        await ctx.channel.purge(limit=limit + 1)
 
     def get_api(self):
         response = requests.get(self.api_link)
@@ -34,21 +37,19 @@ class atomichub(commands.Cog):
     def is_new_collection(self, collection_name):
         new_collection_list = self.get_collection_names(file="new_atomic_names.json")
         for name in new_collection_list:
-            if collection_name == name:
+            if name == collection_name:
                 return False
         return True
 
     def update_new_atomic_names(self):
+        name_list = self.get_collection_names(file="atomic_api.json")
         with open("new_atomic_names.json") as file:
             data = json.load(file)
-        last_collections = self.get_collection_names(file="last_atomic_names.json")
-        for name in last_collections:
-            if self.is_new_collection(name):
-                new_name = {"collection_name": name}
-                data["data"].append(new_name)
+        for name in name_list:
+            new_name = {"collection_name": name}
+            data["data"].insert(0, new_name)
         while len(data["data"]) > 5:
-            data["data"].pop(0)
-
+            data["data"].pop()
         with open("new_atomic_names.json", "w") as file:
             json.dump(data, file)
 
@@ -59,9 +60,9 @@ class atomichub(commands.Cog):
             data = json.load(file)
         for name in name_list:
             new_name = {"collection_name": name}
-            data["data"].append(new_name)
+            data["data"].insert(0, new_name)
         while len(data["data"]) > 5:
-            data["data"].pop(0)
+            data["data"].pop()
 
         with open("last_atomic_names.json", "w") as file:
             json.dump(data, file)
@@ -140,9 +141,8 @@ class atomichub(commands.Cog):
                         if media_link != "":
                             embed.add_field(name=f"{media}", value=media_link, inline=False)
                     await channel.send(embed=embed)
-
             self.update_new_atomic_names()
-            await asyncio.sleep(20)
+            await asyncio.sleep(60)
 
     @commands.Cog.listener()
     async def on_ready(self):
