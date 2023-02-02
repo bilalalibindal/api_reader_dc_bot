@@ -5,10 +5,11 @@ import asyncio
 import json
 
 
+# "https://wax.api.atomicassets.io/atomicassets/v1/collections?page=1&limit=5&order=desc&sort=created"
 class atomichub(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.api_link = "https://wax.api.atomicassets.io/atomicassets/v1/collections?page=1&limit=5&order=desc&sort=created"
+        self.api_link = "https://test.wax.api.atomicassets.io/atomicassets/v1/collections?page=1&limit=5&order=desc&sort=created"
 
     def get_api(self):
         response = requests.get(self.api_link)
@@ -151,4 +152,3 @@ class atomichub(commands.Cog):
 async def setup(bot):
     # Add cog to bot.
     await bot.add_cog(atomichub(bot))
-
