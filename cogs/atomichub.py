@@ -2,87 +2,146 @@ import discord
 import requests
 from discord.ext import commands
 import asyncio
+import json
 
 
-# B367D9FE06ABAECA9E5B097185F4E1
-
-class alcor(commands.Cog):
+class atomichub(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.discord_server = 1015168172753702912
-        self.atomichub_collection_url = "https://wax.atomichub.io/explorer/collection/wax-mainnet/"
-        self.atomichub_api_url = "https://wax.api.atomicassets.io/atomicassets/v1/collections?page=1&limit=1&order=desc&sort=created"
-        self.common_img_url = "https://resizer.atomichub.io/images/v1/preview?ipfs=QmYeWdTRTEePZasagQaT4UkuRbfe1sPvyw47PZrroba9tH&size=370"
-        self.collection_img_url = "https://resizer.atomichub.io/images/v1/preview?ipfs="
-        self.collection_name = ""
-        self.old_collection_name = "a"
-        self.collection_url = ""
-        self.collection_img = ""
-        self.collection_name2 = ""
+        self.api_link = "https://wax.api.atomicassets.io/atomicassets/v1/collections?page=1&limit=5&order=desc&sort=created"
 
-    def check_name(self):
-        url = f"{self.atomichub_api_url}"
-        response = requests.get(url)
-        data = response.text
-        self.collection_name = data.split("collection_name")[1][3:].split(",")[0][:-1]
-        return self.collection_name
+    def get_api(self):
+        response = requests.get(self.api_link)
+        api_data = response.json()
+        with open("atomic_api.json", "w") as file:
+            json.dump(api_data, file)
 
-    def check_name2(self):
-        url = f"{self.atomichub_api_url}"
-        response = requests.get(url)
-        data = response.text
-        self.collection_name2 = data.split("name")[2][3:].split(",")[0][:-1]
-        return self.collection_name2
+    def read_file(self, file):
+        with open(f"{file}") as file:
+            data = json.load(file)
+        return data
 
-    def check_url(self):
-        try:
-            url = f"{self.atomichub_api_url}"
-            response = requests.get(url)
-            data = response.text
-            self.collection_url = data.split("url")[1][3:].split(",")[0][:-1]
-            return self.collection_url
-        except IndexError:
-            return "**NULL**"
+    def get_collection_names(self, file):
+        data = self.read_file(file=f"{file}")
+        name_list = []
+        name_count = len([item for item in data["data"] if "collection_name" in item])
+        for id in range(name_count):
+            collection_name = data["data"][id]["collection_name"]
+            name_list.append(collection_name)
+        return name_list
 
-    def check_img(self):
-        url = f"{self.atomichub_api_url}"
-        response = requests.get(url)
-        data = response.text
-        self.collection_img = data.split("img")[1][3:].split(",")[0][:-1]
-        return self.collection_img
+    def is_new_collection(self, collection_name):
+        new_collection_list = self.get_collection_names(file="new_atomic_names.json")
+        for name in new_collection_list:
+            if collection_name == name:
+                return False
+        return True
+
+    def update_new_atomic_names(self):
+        with open("new_atomic_names.json") as file:
+            data = json.load(file)
+        last_collections = self.get_collection_names(file="last_atomic_names.json")
+        for name in last_collections:
+            if self.is_new_collection(name):
+                new_name = {"collection_name": name}
+                data["data"].append(new_name)
+        while len(data["data"]) > 5:
+            data["data"].pop(0)
+
+        with open("new_atomic_names.json", "w") as file:
+            json.dump(data, file)
+
+    def update_last_atomic_names(self):
+        self.get_api()
+        name_list = self.get_collection_names(file="atomic_api.json")
+        with open("last_atomic_names.json") as file:
+            data = json.load(file)
+        for name in name_list:
+            new_name = {"collection_name": name}
+            data["data"].append(new_name)
+        while len(data["data"]) > 5:
+            data["data"].pop(0)
+
+        with open("last_atomic_names.json", "w") as file:
+            json.dump(data, file)
+
+    # data = collection_name, url
+    def get_collection_data(self, collection_name):
+        api = self.read_file(file="atomic_api.json")
+        for collection in api["data"]:
+            if collection["collection_name"] == collection_name:
+                try:
+                    url = collection["data"]["url"]
+                except KeyError:
+                    url = ""
+                try:
+                    img = collection["img"]
+                except KeyError:
+                    img = ""
+                try:
+                    socials = eval(collection["data"]["socials"])
+                except KeyError:
+                    socials = ""
+
+                return url, img, socials
+
+    def collection_info(self, collection_name, get):
+        media = ['twitter', 'medium', 'facebook', 'github', 'discord', 'youtube', 'telegram']
+        data = self.get_collection_data(collection_name)
+        url = data[0]
+        img = data[1]
+        socials = data[2]
+        if get == "url":
+            return url
+        elif get == "img":
+            return img
+        elif get in media:
+            try:
+                socials[f"{get}"]
+                return socials[f"{get}"]
+            except KeyError:
+                return ""
 
     async def send(self):
         await self.bot.wait_until_ready()
         while not self.bot.is_closed():
+            medias = ['url', 'twitter', 'medium', 'facebook', 'github', 'discord', 'youtube', 'telegram']
+            self.get_api()
+            self.update_last_atomic_names()
+            collections = self.get_collection_names(file="last_atomic_names.json")
+            for name in collections:
+                if self.is_new_collection(collection_name=name):
+                    img = self.collection_info(collection_name=name, get="img")
+                    logo = f"https://resizer.atomichub.io/images/v1/preview?ipfs={img}&size=370"
+                    common_logo = "https://resizer.atomichub.io/images/v1/preview?ipfs=QmRX56ttsvciSiDieq9LRA1hejx6nXjrz4pv4QC2cGvgNx&size=370"
 
-            self.collection_name = self.check_name()
-            if self.collection_name != self.old_collection_name:
-                self.collection_img = self.check_img()
-                self.collection_url = self.check_url()
-                guild = self.bot.get_guild(self.discord_server)
-                channel = discord.utils.get(guild.channels, name="atomichub")
-                embed = discord.Embed(
-                    title=f"NEW ATOMICHUB LISTING",
-                    description=f"`Please double-check the collection name and do your own research about the project before making your purchase.`",
-                    color=0xe67e22)
-                # We can get profile picture of member who joined server.
-                if len(self.collection_img) < 3:
-                    embed.set_thumbnail(
-                        url=f"{self.common_img_url}")
-                else:
-                    embed.set_thumbnail(
-                        url=f"{self.collection_img_url}{self.collection_img}&size=370")
-                embed.add_field(name="_ _", value=f"```yaml\n"
-                                                  f"Collection Name: "
-                                                  f"{self.collection_name}```\n", inline=True)
-                embed.add_field(name="Atomichub",
-                                value=f"{self.atomichub_collection_url}{self.collection_name}",
-                                inline=False)
-                embed.add_field(name="URL", value=self.collection_url, inline=False)
+                    if img != None:
+                        image = logo
+                    else:
+                        image = common_logo
 
-                await channel.send(embed=embed)
-                self.old_collection_name = self.collection_name
-            await asyncio.sleep(60)  # sleep for 5 minutes
+                    guild = self.bot.get_guild(1015168172753702912)
+                    channel = discord.utils.get(guild.channels, name="atomichub")
+                    embed = discord.Embed(
+                        title=f"NEW ATOMICHUB LISTING",
+                        description=f"`Please double-check the collection name and do your own research about the project before making your purchase.`",
+                        color=0xe67e22)
+                    embed.add_field(name="_ _", value=f"```yaml\n"
+                                                      f"Collection Name: "
+                                                      f"{name}```\n",
+                                    inline=True)
+                    embed.set_thumbnail(url=f"{image}")
+                    embed.add_field(name="_Atomichub_",
+                                    value=f"https://wax.atomichub.io/explorer/collection/wax-mainnet/{name}",
+                                    inline=False)
+                    for media in medias:
+                        media_link = self.collection_info(collection_name=name, get=f"{media}")
+                        if media_link != "":
+                            embed.add_field(name=f"{media}", value=media_link, inline=False)
+                    await channel.send(embed=embed)
+
+            self.update_new_atomic_names()
+            await asyncio.sleep(20)
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -91,4 +150,5 @@ class alcor(commands.Cog):
 
 async def setup(bot):
     # Add cog to bot.
-    await bot.add_cog(alcor(bot))
+    await bot.add_cog(atomichub(bot))
+
