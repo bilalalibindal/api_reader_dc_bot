@@ -1,13 +1,3 @@
-# 1. Pull project infos from dapp radar api.
-# 2. Save this pull request to json file.
-# 3. Do your next research to dependents page count ( so we will see last page and last added  programs)
-# 4. Create another json file to save last new projects.
-# 5. Search project name in json file that I talked about above.
-# 6. If project name not in that json file, add it to top, and delete last project in file.
-# 7. Add few api keys, so when some of them used for 1000 times we will continue to use other api key.
-# 8. Adapt this codes to discord.py.
-
-
 import discord
 import requests
 import json
@@ -18,162 +8,142 @@ import asyncio
 class dappradar(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.page_count = 1340
-        self.api_counter = 0
         self.code = 0
 
     # With this function getting project infos from dapp radar api.
     # with page_count parameter we access to last page to se new projects.
     def get_api(self):
-        self.api_counter += 1
-        with open('api_codes.json', 'r') as file:
-            codes = json.load(file)
-        print(codes['code'][self.code]['apiCode'])
-        if self.api_counter % 1000 == 0:
-            self.code += 1
-            try:
-                codes[self.code]
-            except IndexError:
-                self.code = 0
-
-        url = f"https://api.dappradar.com/4tsxo4vuhotaojtl/dapps?page={self.page_count}&resultsPerPage=10"
-        headers = {
-            "X-BLOBR-KEY": f"{codes['code'][self.code]['apiCode']}"
-        }
-
-        response = requests.get(url, headers=headers)
-        project_list = response.json()
-        # Write all datas to json file.
-        with open("dapp_radar.json", "w") as file:
-            json.dump(project_list, file)
+        api_keys = ['C8PpeLAUGkNXFFotMwsuS5Pa4PDoF1PN', 'fVI0vvwfkEb2AA7DlCppvwcrLSsAMBPs',
+                    'arZjtkqPVeNbc7L9njg6S1YGFXwVSTvJ', 'pR8kMTOmBQRM3MsVhr0G2l6TQANqi1Uv',
+                    'bLeFkKwLOEOs1ZK75HsuVU80R52ToXsu', 'RsjFJWOM7laVaB4vtYLX7hYxlM4l5XvS',
+                    'wWzvYIAFMIDlLZwMRgCx7OXw3nx4wBi5', 'zZsNwI6JuhGSCfogmNrflqvw10ysvZBS',
+                    'HxWWgpxjq6QCmyFrOs68b82HLv0jMZqX']
         try:
-            if self.read_api()['message'] != None:
-                self.code += 1
-                self.get_api()
-        except KeyError:
-            print("No problem")
+            api_keys[self.code]
+        except IndexError:
+            self.code = 0
 
-    # Read datas from json file which we wrote api datas.
-    def read_api(self):
-        with open("dapp_radar.json", "r") as file:
+        url = f"https://api.dappradar.com/4tsxo4vuhotaojtl/dapps?page={self.get_last_page()}&resultsPerPage=10"
+        headers = {
+            "X-BLOBR-KEY": f"{api_keys[self.code]}"
+        }
+        response = requests.get(url, headers=headers)
+        api_data = response.json()
+        if api_data["success"] != None and api_data["success"] == True:
+            with open("dappradar_api.json", "w") as file:
+                json.dump(api_data, file)
+        else:
+            self.code += 1
+            self.get_api()
+
+    def read_file(self, file):
+        with open(f"{file}") as file:
             data = json.load(file)
         return data
 
-    # get project names from json file with use read_api function.
-    def get_project_names(self):
-        name_list = []
-        # Get name count from json.
-        name_count = len([item for item in self.read_api()["results"] if "name" in item])
-        # Look for name count and add all names to list.
-        for i in range(name_count):
-            # Search project name in json file.
-            project_name = self.read_api()["results"][i]["dappId"]
-            # Add project names to list.
-            name_list.append(project_name)
-        return name_list
+    def get_last_page(self):
+        try:
+            data = self.read_file("dappradar_api.json")
+            last_page = data["pageCount"]
+            return last_page
+        except KeyError:
+            return "1360"
 
-    # get project id from json file with use read_api function.
-    def get_project_ids(self):
+    def get_projects_id(self, file):
+        data = self.read_file(file=f"{file}")
         id_list = []
-        # Get name count from json.
-        id_count = len([item for item in self.read_api()["results"] if "dappId" in item])
-        for i in range(id_count):
-            dappId = self.read_api()["results"][i]["dappId"]
-            id_list.append(dappId)
+        id_count = len([item for item in data["results"] if "dappId" in item])
+        for id in range(id_count):
+            project_id = data["results"][id]["dappId"]
+            id_list.append(project_id)
         return id_list
 
-    def get_new_project_ids(self):
-        id_list = []
-        with open('new_projects_ids.json', 'r') as file:
-            data = json.load(file)
-        for item in (data["ID"]):
-            id = item["dappId"]
-            id_list.append(id)
-        return id_list
-
-    # With this function; checking is project new with using new_projects.json.
-    # If project new; return True else return; False.
     def is_new_project(self, dapp_id):
-        with open('new_projects_ids.json', 'r') as file:
-            data = json.load(file)
-
-        for item in (data["ID"]):
-            id = item["dappId"]
+        new_dapps_list = self.get_projects_id(file="new_dapps_id.json")
+        for id in new_dapps_list:
             if dapp_id == id:
                 return False
         return True
 
-    # With this function, will update new project json file .
-    def change_new_projects(self):
-        id_list = self.get_project_ids()
-        with open('new_projects_ids.json', 'r') as file:
+    def update_new_dapps_id(self):
+        with open("new_dapps_id.json") as file:
             data = json.load(file)
-        # With this for loop, look by id to see is any new project added.
-        for id in id_list:
-            # If it's new project add it to end of the list.
-            if self.is_new_project(id):
-                new_data = {"dappId": id}
-                data["ID"].append(new_data)
-        # With this while loop keep 10 index in new project list, will delete at top.
-        while len(data["ID"]) > 10:
-            data["ID"].pop(0)
-        # Save last version of new project list to json file.
-        with open('new_projects_ids.json', 'w') as file:
+        self.update_last_dapps_id()
+        last_projects = self.get_projects_id(file="last_dapps_id.json")
+        for id in last_projects:
+            if self.is_new_project(dapp_id=id):
+                new_id = {"dappId": id}
+                data["results"].append(new_id)
+        while len(data["results"]) > 10:
+            data["results"].pop(0)
+        with open("new_dapps_id.json", "w") as file:
             json.dump(data, file)
 
-    # Get specific value from json file by dappId parameter.
-    # Variable = name,logo,link,website,chains,categories.
-    def get_project_variable_by_dapp_id(self, dapp_id, variable):
-        data = self.read_api()
-        for project in data["results"]:
-            if project["dappId"] == dapp_id:
-                if variable == "categories" or variable == "chains":
-                    result = project[f"{variable}"][0]
-                    return result
-                result = project[f"{variable}"]
-                return result
+    def update_last_dapps_id(self):
+        id_list = self.get_projects_id(file="dappradar_api.json")
+        with open("last_dapps_id.json") as file:
+            data = json.load(file)
+        for id in id_list:
+            new_id = {"dappId": id}
+            data["results"].append(new_id)
+        while len(data["results"]) > 10:
+            data["results"].pop(0)
+        with open("last_dapps_id.json", "w") as file:
+            json.dump(data, file)
+
+    # data = ['name', 'description', 'logo', 'link', 'website', 'chains', 'categories']
+    def get_dapp_data(self, dapp_id):
+        api = self.read_file(file="dappradar_api.json")
+        for dapp in api["results"]:
+            if dapp["dappId"] == dapp_id:
+                return dapp
+
+    def get_dapp_info(self, dapp_id, get):
+        media = ['description', 'link', 'website', 'chains', 'categories']
+        data = self.get_dapp_data(dapp_id)
+        if get == "name":
+            return data["name"]
+        elif get == "logo":
+            return data["logo"]
+        elif get in media:
+            return data[f"{get}"]
+        else:
+            return None
 
     async def dapp_radar_send(self):
         await self.bot.wait_until_ready()
         while not self.bot.is_closed():
+            medias = ['description', 'link', 'website', 'chains', 'categories']
             self.get_api()
-            project_id_list = self.get_project_ids()
-            for id in project_id_list:
-                if self.is_new_project(id):
+            self.update_last_dapps_id()
+            dapps_id = self.get_projects_id(file="last_dapps_id.json")
+            for id in dapps_id:
+                if self.is_new_project(dapp_id=id):
+                    name = self.get_dapp_info(dapp_id=id, get="name")
+                    logo = self.get_dapp_info(dapp_id=id, get="logo")
                     guild = self.bot.get_guild(1015168172753702912)
                     channel = discord.utils.get(guild.channels, name="dappradar")
-                    logo = self.get_project_variable_by_dapp_id(id, 'logo')
-                    common_logo = "https://raw.githubusercontent.com/dappradar/tokens/main/ethereum/0x44709a920fccf795fbc57baa433cc3dd53c44dbe/logo.png"
                     embed = discord.Embed(
                         title=f"NEW DAPP RADAR LISTING",
                         description=f"`Please double-check the collection name and do your own research about the project before making your purchase.`",
                         color=0xe67e22)
-                    if len(logo) < 3:
-                        embed.set_thumbnail(
-                            url=common_logo)
-                    else:
-                        embed.set_thumbnail(
-                            url=logo)
-
-                    # We can get profile picture of member who joined server.
                     embed.add_field(name="_ _", value=f"```yaml\n"
-                                                      f"Collection Name: "
-                                                      f"{self.get_project_variable_by_dapp_id(id, 'name')}```\n",
+                                                      f"Project Name: "
+                                                      f"{name}```\n",
                                     inline=True)
-                    embed.add_field(name="Dapp Radar",
-                                    value=f"{self.get_project_variable_by_dapp_id(id, 'link')}",
-                                    inline=False)
-                    embed.add_field(name="Website", value=self.get_project_variable_by_dapp_id(id, 'website'),
-                                    inline=False)
-                    embed.add_field(name="Chain", value=self.get_project_variable_by_dapp_id(id, 'chains'), inline=True)
-                    embed.add_field(name="Category", value=self.get_project_variable_by_dapp_id(id, 'categories'),
-                                    inline=True)
+                    embed.set_thumbnail(url=f"{logo}")
+                    for media in medias:
+                        media_link = self.get_dapp_info(dapp_id=id, get=f"{media}")
+                        if media_link != "":
+                            if media == "link":
+                                embed.add_field(name="Dapp Radar", value=media_link, inline=False)
+                            if media == "chains" or media == "categories":
+                                embed.add_field(name=f"{media}", value=media_link[0], inline=True)
+                            else:
+                                embed.add_field(name=f"{media}", value=media_link, inline=False)
                     await channel.send(embed=embed)
-                else:
-                    print("n")
-            self.page_count = str(self.read_api()["pageCount"])
-            self.change_new_projects()
-            await asyncio.sleep(480)  # sleep for 5 minutes
+            self.update_new_dapps_id()
+            await asyncio.sleep(480)
 
     @commands.Cog.listener()
     async def on_ready(self):

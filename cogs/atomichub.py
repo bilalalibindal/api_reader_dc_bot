@@ -108,7 +108,6 @@ class atomichub(commands.Cog):
         await self.bot.wait_until_ready()
         while not self.bot.is_closed():
             medias = ['url', 'twitter', 'medium', 'facebook', 'github', 'discord', 'youtube', 'telegram']
-            self.get_api()
             self.update_last_atomic_names()
             collections = self.get_collection_names(file="last_atomic_names.json")
             for name in collections:
