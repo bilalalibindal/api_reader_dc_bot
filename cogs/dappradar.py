@@ -9,6 +9,11 @@ class dappradar(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.code = 0
+        self.api_keys = ['wWzvYIAFMIDlLZwMRgCx7OXw3nx4wBi5', 'C8PpeLAUGkNXFFotMwsuS5Pa4PDoF1PN',
+                         'fVI0vvwfkEb2AA7DlCppvwcrLSsAMBPs', 'arZjtkqPVeNbc7L9njg6S1YGFXwVSTvJ',
+                         'pR8kMTOmBQRM3MsVhr0G2l6TQANqi1Uv', 'bLeFkKwLOEOs1ZK75HsuVU80R52ToXsu',
+                         'RsjFJWOM7laVaB4vtYLX7hYxlM4l5XvS', 'zZsNwI6JuhGSCfogmNrflqvw10ysvZBS',
+                         'HxWWgpxjq6QCmyFrOs68b82HLv0jMZqX']
 
     # With this function getting project infos from dapp radar api.
     # with page_count parameter we access to last page to se new projects.
