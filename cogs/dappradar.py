@@ -105,7 +105,7 @@ class dappradar(commands.Cog):
         while not self.bot.is_closed():
             medias = ['description', 'link', 'website', 'chains', 'categories']
             self.update_api()
-            dapps_id = self.get_projects_id(file="new_dapps_id.json")
+            dapps_id = self.get_projects_id(file="dappradar_api.json")
             for id in dapps_id:
                 if self.is_new_project(dapp_id=id):
                     self.add_new_id(id=id)
