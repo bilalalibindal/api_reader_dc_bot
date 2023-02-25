@@ -12,42 +12,41 @@ class dappradar(commands.Cog):
 
     # With this function getting project infos from dapp radar api.
     # with page_count parameter we access to last page to se new projects.
-    def get_api(self):
-        api_keys = ['C8PpeLAUGkNXFFotMwsuS5Pa4PDoF1PN', 'fVI0vvwfkEb2AA7DlCppvwcrLSsAMBPs',
-                    'arZjtkqPVeNbc7L9njg6S1YGFXwVSTvJ', 'pR8kMTOmBQRM3MsVhr0G2l6TQANqi1Uv',
-                    'bLeFkKwLOEOs1ZK75HsuVU80R52ToXsu', 'RsjFJWOM7laVaB4vtYLX7hYxlM4l5XvS',
-                    'wWzvYIAFMIDlLZwMRgCx7OXw3nx4wBi5', 'zZsNwI6JuhGSCfogmNrflqvw10ysvZBS',
-                    'HxWWgpxjq6QCmyFrOs68b82HLv0jMZqX']
+    def update_api(self):
         try:
-            api_keys[self.code]
+            self.api_keys[self.code]
         except IndexError:
             self.code = 0
 
-        url = f"https://api.dappradar.com/4tsxo4vuhotaojtl/dapps?page={self.get_last_page()}&resultsPerPage=10"
+        url = f"https://api.dappradar.com/4tsxo4vuhotaojtl/dapps?page={self.last_page()}&resultsPerPage=10"
         headers = {
-            "X-BLOBR-KEY": f"{api_keys[self.code]}"
+            "X-BLOBR-KEY": f"{self.api_keys[self.code]}"
         }
+
         response = requests.get(url, headers=headers)
-        api_data = response.json()
-        if api_data["success"] != None and api_data["success"] == True:
+        api = response.json()
+        if api["success"] != None and api["success"] == True:
             with open("dappradar_api.json", "w") as file:
-                json.dump(api_data, file)
+                json.dump(api, file)
         else:
             self.code += 1
-            self.get_api()
+            self.update_api()
+
+        with open("dappradar_api.json", "w") as file:
+            json.dump(api, file)
 
     def read_file(self, file):
         with open(f"{file}") as file:
             data = json.load(file)
         return data
 
-    def get_last_page(self):
-        try:
-            data = self.read_file("dappradar_api.json")
-            last_page = data["pageCount"]
-            return last_page
-        except KeyError:
-            return "1360"
+    def last_page(self):
+        data = self.read_file("dappradar_api.json")
+        if data["success"] == True:
+            self.page_result = data["pageCount"]
+            return self.page_result
+        else:
+            return self.page_result
 
     def get_projects_id(self, file):
         data = self.read_file(file=f"{file}")
@@ -59,37 +58,22 @@ class dappradar(commands.Cog):
         return id_list
 
     def is_new_project(self, dapp_id):
-        new_dapps_list = self.get_projects_id(file="new_dapps_id.json")
-        for id in new_dapps_list:
-            if dapp_id == id:
-                return False
-        return True
+        id_list = self.get_projects_id("new_dapps_id.json")
+        if dapp_id not in id_list:
+            return True
+        else:
+            return False
 
-    def update_new_dapps_id(self):
-        with open("new_dapps_id.json") as file:
-            data = json.load(file)
-        self.update_last_dapps_id()
-        last_projects = self.get_projects_id(file="last_dapps_id.json")
-        for id in last_projects:
-            if self.is_new_project(dapp_id=id):
-                new_id = {"dappId": id}
-                data["results"].append(new_id)
-        while len(data["results"]) > 10:
-            data["results"].pop(0)
+    def add_new_id(self, id):
+        self.data = self.read_file("new_dapps_id.json")
+        new_id = {"dappId": id}
+        self.data["results"].append(new_id)
+
+    def update_new_id(self):
+        while len(self.data["results"]) >= 20:
+            self.data["results"].pop(0)
         with open("new_dapps_id.json", "w") as file:
-            json.dump(data, file)
-
-    def update_last_dapps_id(self):
-        id_list = self.get_projects_id(file="dappradar_api.json")
-        with open("last_dapps_id.json") as file:
-            data = json.load(file)
-        for id in id_list:
-            new_id = {"dappId": id}
-            data["results"].append(new_id)
-        while len(data["results"]) > 10:
-            data["results"].pop(0)
-        with open("last_dapps_id.json", "w") as file:
-            json.dump(data, file)
+            json.dump(self.data, file)
 
     # data = ['name', 'description', 'logo', 'link', 'website', 'chains', 'categories']
     def get_dapp_data(self, dapp_id):
@@ -114,11 +98,11 @@ class dappradar(commands.Cog):
         await self.bot.wait_until_ready()
         while not self.bot.is_closed():
             medias = ['description', 'link', 'website', 'chains', 'categories']
-            self.get_api()
-            self.update_last_dapps_id()
-            dapps_id = self.get_projects_id(file="last_dapps_id.json")
+            self.update_api()
+            dapps_id = self.get_projects_id(file="new_dapps_id.json")
             for id in dapps_id:
                 if self.is_new_project(dapp_id=id):
+                    self.add_new_id(id=id)
                     name = self.get_dapp_info(dapp_id=id, get="name")
                     logo = self.get_dapp_info(dapp_id=id, get="logo")
                     guild = self.bot.get_guild(1015168172753702912)
@@ -142,7 +126,7 @@ class dappradar(commands.Cog):
                             else:
                                 embed.add_field(name=f"{media}", value=media_link, inline=False)
                     await channel.send(embed=embed)
-            self.update_new_dapps_id()
+            self.update_new_id()
             await asyncio.sleep(480)
 
     @commands.Cog.listener()
