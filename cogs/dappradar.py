@@ -7,6 +7,7 @@ import asyncio
 
 class dappradar(commands.Cog):
     def __init__(self, bot):
+        self.data = self.read_file("new_dapps_id.json")
         self.bot = bot
         self.code = 0
         self.api_keys = ['wWzvYIAFMIDlLZwMRgCx7OXw3nx4wBi5', 'C8PpeLAUGkNXFFotMwsuS5Pa4PDoF1PN',
