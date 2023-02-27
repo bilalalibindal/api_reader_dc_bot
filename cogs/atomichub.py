@@ -8,11 +8,8 @@ import json
 class atomichub(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.api_link = "https://wax.api.atomicassets.io/atomicassets/v1/collections?page=1&limit=5&order=desc&sort=created"
-
-    @commands.command()
-    async def clear(self, ctx, limit: int):
-        await ctx.channel.purge(limit=limit + 1)
+        self.api_link = "https://wax.api.atomicassets.io/atomicassets/v1/collections?page=1&limit=10&order=desc&sort=created"
+        self.data = self.read_file("atomic_new.json")
 
     def get_api(self):
         response = requests.get(self.api_link)
@@ -25,6 +22,18 @@ class atomichub(commands.Cog):
             data = json.load(file)
         return data
 
+    def add_new_collection(self, collection_name: str):
+        data_copy = self.data.copy()  # self.data'nın bir kopyası oluşturulur
+        new_collection = {"collection_name": collection_name}
+        data_copy["data"].insert(0, new_collection)
+        self.data = data_copy  # self.data kopya ile güncellenir
+
+    def update_new_collection(self):
+        while len(self.data["data"]) >= 20:
+            self.data["data"].pop()
+        with open("atomic_new.json", "w") as file:
+            json.dump(self.data, file)
+
     def get_collection_names(self, file):
         data = self.read_file(file=f"{file}")
         name_list = []
@@ -35,37 +44,11 @@ class atomichub(commands.Cog):
         return name_list
 
     def is_new_collection(self, collection_name):
-        new_collection_list = self.get_collection_names(file="new_atomic_names.json")
+        new_collection_list = self.get_collection_names(file="atomic_new.json")
         for name in new_collection_list:
             if name == collection_name:
                 return False
         return True
-
-    def update_new_atomic_names(self):
-        name_list = self.get_collection_names(file="atomic_api.json")
-        with open("new_atomic_names.json") as file:
-            data = json.load(file)
-        for name in name_list:
-            new_name = {"collection_name": name}
-            data["data"].insert(0, new_name)
-        while len(data["data"]) > 5:
-            data["data"].pop()
-        with open("new_atomic_names.json", "w") as file:
-            json.dump(data, file)
-
-    def update_last_atomic_names(self):
-        self.get_api()
-        name_list = self.get_collection_names(file="atomic_api.json")
-        with open("last_atomic_names.json") as file:
-            data = json.load(file)
-        for name in name_list:
-            new_name = {"collection_name": name}
-            data["data"].insert(0, new_name)
-        while len(data["data"]) > 5:
-            data["data"].pop()
-
-        with open("last_atomic_names.json", "w") as file:
-            json.dump(data, file)
 
     # data = collection_name, url
     def get_collection_data(self, collection_name):
@@ -108,10 +91,11 @@ class atomichub(commands.Cog):
         await self.bot.wait_until_ready()
         while not self.bot.is_closed():
             medias = ['url', 'twitter', 'medium', 'facebook', 'github', 'discord', 'youtube', 'telegram']
-            self.update_last_atomic_names()
-            collections = self.get_collection_names(file="last_atomic_names.json")
+            collections = self.get_collection_names(file="atomic_api.json")
+            collections.reverse()
             for name in collections:
                 if self.is_new_collection(collection_name=name):
+                    self.add_new_collection(collection_name=name)
                     img = self.collection_info(collection_name=name, get="img")
                     logo = f"https://resizer.atomichub.io/images/v1/preview?ipfs={img}&size=370"
                     common_logo = "https://resizer.atomichub.io/images/v1/preview?ipfs=QmRX56ttsvciSiDieq9LRA1hejx6nXjrz4pv4QC2cGvgNx&size=370"
@@ -140,7 +124,7 @@ class atomichub(commands.Cog):
                         if media_link != "":
                             embed.add_field(name=f"{media}", value=media_link, inline=False)
                     await channel.send(embed=embed)
-            self.update_new_atomic_names()
+            self.update_new_collection()
             await asyncio.sleep(60)
 
     @commands.Cog.listener()

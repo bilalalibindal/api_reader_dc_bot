@@ -71,9 +71,10 @@ class dappradar(commands.Cog):
             return False
 
     def add_new_id(self, id):
-        self.data = self.read_file("new_dapps_id.json")
+        data_copy = self.data.copy()
         new_id = {"dappId": id}
-        self.data["results"].append(new_id)
+        data_copy["results"].append(new_id)
+        self.data = data_copy
 
     def update_new_id(self):
         while len(self.data["results"]) >= 20:
