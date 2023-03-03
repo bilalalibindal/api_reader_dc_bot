@@ -109,7 +109,7 @@ class atomichub(commands.Cog):
                     guild = self.bot.get_guild(1015168172753702912)
                     channel = discord.utils.get(guild.channels, name="atomichub")
                     embed = discord.Embed(
-                        title=f"NEW ATOMICHUB LISTING",
+                        title=f"NEW ATOMICHUB LISTING\n<@&1015663686741921923>",
                         description=f"`Please double-check the collection name and do your own research about the project before making your purchase.`",
                         color=0xe67e22)
                     embed.add_field(name="_ _", value=f"```yaml\n"
