@@ -52,7 +52,6 @@ class atomichub(commands.Cog):
 
     # data = collection_name, url
     def get_collection_data(self, collection_name):
-        self.get_api()
         api = self.read_file(file="atomic_api.json")
         for collection in api["data"]:
             if collection["collection_name"] == collection_name:
@@ -91,6 +90,7 @@ class atomichub(commands.Cog):
     async def send(self):
         await self.bot.wait_until_ready()
         while not self.bot.is_closed():
+            self.get_api()
             medias = ['url', 'twitter', 'medium', 'facebook', 'github', 'discord', 'youtube', 'telegram']
             collections = self.get_collection_names(file="atomic_api.json")
             collections.reverse()
