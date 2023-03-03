@@ -52,6 +52,7 @@ class atomichub(commands.Cog):
 
     # data = collection_name, url
     def get_collection_data(self, collection_name):
+        self.get_api()
         api = self.read_file(file="atomic_api.json")
         for collection in api["data"]:
             if collection["collection_name"] == collection_name:
