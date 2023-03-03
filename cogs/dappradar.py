@@ -23,6 +23,8 @@ class dappradar(commands.Cog):
             self.api_keys[self.code]
         except IndexError:
             self.code = 0
+        except KeyError:
+            self.code += 1
 
         url = f"https://api.dappradar.com/4tsxo4vuhotaojtl/dapps?page={self.last_page()}&resultsPerPage=10"
         headers = {
