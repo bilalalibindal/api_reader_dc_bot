@@ -6,10 +6,10 @@ import asyncio
 
 
 class dappradar(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot, code):
         self.data = self.read_file("new_dapps_id.json")
         self.bot = bot
-        self.code = 0
+        self.code = code
         self.api_keys = ['wWzvYIAFMIDlLZwMRgCx7OXw3nx4wBi5', 'C8PpeLAUGkNXFFotMwsuS5Pa4PDoF1PN',
                          'fVI0vvwfkEb2AA7DlCppvwcrLSsAMBPs', 'arZjtkqPVeNbc7L9njg6S1YGFXwVSTvJ',
                          'pR8kMTOmBQRM3MsVhr0G2l6TQANqi1Uv', 'bLeFkKwLOEOs1ZK75HsuVU80R52ToXsu',
@@ -143,4 +143,4 @@ class dappradar(commands.Cog):
 
 async def setup(bot):
     # Add cog to bot.
-    await bot.add_cog(dappradar(bot))
+    await bot.add_cog(dappradar(bot, code=0))
