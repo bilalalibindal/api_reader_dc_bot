@@ -135,7 +135,7 @@ class dappradar(commands.Cog):
                                 embed.add_field(name=f"{media}", value=media_link, inline=False)
                     await channel.send(embed=embed)
             self.update_new_id()
-            await asyncio.sleep(30)
+            await asyncio.sleep(1000)
 
     @commands.Cog.listener()
     async def on_ready(self):
