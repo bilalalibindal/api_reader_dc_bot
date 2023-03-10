@@ -7,7 +7,7 @@ import asyncio
 
 class dappradar(commands.Cog):
     def __init__(self, bot, code):
-        self.page_result = 1384
+        self.page_result = 1374
         self.data = self.read_file("new_dapps_id.json")
         self.bot = bot
         self.code = code
