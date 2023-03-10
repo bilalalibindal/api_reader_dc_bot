@@ -97,7 +97,6 @@ class atomichub(commands.Cog):
             for name in collections:
                 if self.is_new_collection(collection_name=name):
                     self.add_new_collection(collection_name=name)
-                    self.update_new_collection()
                     img = self.collection_info(collection_name=name, get="img")
                     logo = f"https://resizer.atomichub.io/images/v1/preview?ipfs={img}&size=370"
                     common_logo = "https://resizer.atomichub.io/images/v1/preview?ipfs=QmRX56ttsvciSiDieq9LRA1hejx6nXjrz4pv4QC2cGvgNx&size=370"
