@@ -6,13 +6,12 @@ import asyncio
 
 
 class dappradar(commands.Cog):
-    def __init__(self, bot, code):
-        self.page_result = 1374
+    def __init__(self, bot):
         self.data = self.read_file("new_dapps_id.json")
         self.bot = bot
-        self.code = code
-        self.api_keys = ['zZsNwI6JuhGSCfogmNrflqvw10ysvZBS', 'wWzvYIAFMIDlLZwMRgCx7OXw3nx4wBi5',
-                         'C8PpeLAUGkNXFFotMwsuS5Pa4PDoF1PN',
+        self.code = 0
+        self.api_keys = ['zZsNwI6JuhGSCfogmNrflqvw10ysvZBS', 'C8PpeLAUGkNXFFotMwsuS5Pa4PDoF1PN',
+                         'wWzvYIAFMIDlLZwMRgCx7OXw3nx4wBi5',
                          'fVI0vvwfkEb2AA7DlCppvwcrLSsAMBPs', 'arZjtkqPVeNbc7L9njg6S1YGFXwVSTvJ',
                          'pR8kMTOmBQRM3MsVhr0G2l6TQANqi1Uv', 'bLeFkKwLOEOs1ZK75HsuVU80R52ToXsu',
                          'RsjFJWOM7laVaB4vtYLX7hYxlM4l5XvS',
@@ -40,6 +39,9 @@ class dappradar(commands.Cog):
             self.code += 1
             self.update_api()
 
+        with open("dappradar_api.json", "w") as file:
+            json.dump(api, file)
+
     def read_file(self, file):
         with open(f"{file}") as file:
             data = json.load(file)
@@ -51,7 +53,7 @@ class dappradar(commands.Cog):
             self.page_result = data["pageCount"]
             return self.page_result
         else:
-            return self.page_result
+            return 1200
 
     def get_projects_id(self, file):
         data = self.read_file(file=f"{file}")
@@ -70,10 +72,9 @@ class dappradar(commands.Cog):
             return False
 
     def add_new_id(self, id):
-        data_copy = self.data.copy()
+        self.data = self.read_file("new_dapps_id.json")
         new_id = {"dappId": id}
-        data_copy["results"].append(new_id)
-        self.data = data_copy
+        self.data["results"].append(new_id)
 
     def update_new_id(self):
         while len(self.data["results"]) >= 20:
@@ -134,7 +135,7 @@ class dappradar(commands.Cog):
                                 embed.add_field(name=f"{media}", value=media_link, inline=False)
                     await channel.send(embed=embed)
             self.update_new_id()
-            await asyncio.sleep(1000)
+            await asyncio.sleep(30)
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -143,4 +144,4 @@ class dappradar(commands.Cog):
 
 async def setup(bot):
     # Add cog to bot.
-    await bot.add_cog(dappradar(bot, code=0))
+    await bot.add_cog(dappradar(bot))
