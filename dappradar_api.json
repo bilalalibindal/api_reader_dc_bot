@@ -1,1 +1,39 @@
-{"success": true, "results": [{"dappId": 29360, "name": "Modern Muse: Marilyn Monroe", "description": "The mint pass for Modern Muse by Marilyn Monroe x Zeblocks, a generative art project.", "fullDescription": "<p>The mint pass for Modern Muse by Marilyn Monroe x Zeblocks, a generative art project.</p>", "logo": "https://dashboard-assets.dappradar.com/document/29360/modernmusemarilynmonroe-dapp-collectibles-ethereum-logo_fa4ce89d1c10b8b3122b0ee8e9ec0e3c.png", "link": "https://dappradar.com/ethereum/collectibles/modern-muse-marilyn-monroe", "website": "https://marilynmonroenft.io/", "chains": ["ethereum"], "categories": ["collectibles"]}, {"dappId": 29493, "name": "NFT.NYC 2023", "description": "NFT.NYC, the leading annual Non-Fungible Token event will return to New York City in 2023 (April 12-14).", "fullDescription": "<p>Each General Admission Pass is redeemable for a General Admission Ticket to the April 2023 event PLUS:</p>\n<ul>\n  <li>1 x bonus piece of merch from OpenSea and other NFT.NYC partners.</li>\n  <li>The first 50 General Admission Passes minted will receive an additional General Admission Ticket at no charge.</li>\n  <li>Mints 51-750 have a 1-in-5 chance of receiving a free upgrade from a General Admission Ticket to a VIP Access Ticket.</li>\n</ul>\n<p>Each VIP Pass is redeemable for a VIP Access Ticket to the April 2023 event PLUS:</p>\n<ul>\n  <li>1 x bonus piece of merch from OpenSea and other NFT.NYC partners.</li>\n  <li>The first 50 VIP Passes minted will receive an additional VIP Access Ticket at no charge.</li>\n  <li>Mints 51-250 have a 1-in-5 chance of receiving an additional VIP Access Ticket at no charge.</li>\n</ul>", "logo": "https://dashboard-assets.dappradar.com/document/29493/nftnyc2023-dapp-collectibles-ethereum-logo_a8f87ab4e99d732621fa251bc3f8b274.png", "link": "https://dappradar.com/ethereum/collectibles/nft-nyc-2023", "website": "https://www.nft.nyc/", "chains": ["ethereum"], "categories": ["collectibles"]}], "page": 1384, "pageCount": 1384, "resultCount": 13832, "resultsPerPage": 10}
+{
+  "success": true,
+  "results": [
+    {
+      "dappId": 29360,
+      "name": "Modern Muse: Marilyn Monroe",
+      "description": "The mint pass for Modern Muse by Marilyn Monroe x Zeblocks, a generative art project.",
+      "fullDescription": "<p>The mint pass for Modern Muse by Marilyn Monroe x Zeblocks, a generative art project.</p>",
+      "logo": "https://dashboard-assets.dappradar.com/document/29360/modernmusemarilynmonroe-dapp-collectibles-ethereum-logo_fa4ce89d1c10b8b3122b0ee8e9ec0e3c.png",
+      "link": "https://dappradar.com/ethereum/collectibles/modern-muse-marilyn-monroe",
+      "website": "https://marilynmonroenft.io/",
+      "chains": [
+        "ethereum"
+      ],
+      "categories": [
+        "collectibles"
+      ]
+    },
+    {
+      "dappId": 29493,
+      "name": "NFT.NYC 2023",
+      "description": "NFT.NYC, the leading annual Non-Fungible Token event will return to New York City in 2023 (April 12-14).",
+      "fullDescription": "<p>Each General Admission Pass is redeemable for a General Admission Ticket to the April 2023 event PLUS:</p>\n<ul>\n  <li>1 x bonus piece of merch from OpenSea and other NFT.NYC partners.</li>\n  <li>The first 50 General Admission Passes minted will receive an additional General Admission Ticket at no charge.</li>\n  <li>Mints 51-750 have a 1-in-5 chance of receiving a free upgrade from a General Admission Ticket to a VIP Access Ticket.</li>\n</ul>\n<p>Each VIP Pass is redeemable for a VIP Access Ticket to the April 2023 event PLUS:</p>\n<ul>\n  <li>1 x bonus piece of merch from OpenSea and other NFT.NYC partners.</li>\n  <li>The first 50 VIP Passes minted will receive an additional VIP Access Ticket at no charge.</li>\n  <li>Mints 51-250 have a 1-in-5 chance of receiving an additional VIP Access Ticket at no charge.</li>\n</ul>",
+      "logo": "https://dashboard-assets.dappradar.com/document/29493/nftnyc2023-dapp-collectibles-ethereum-logo_a8f87ab4e99d732621fa251bc3f8b274.png",
+      "link": "https://dappradar.com/ethereum/collectibles/nft-nyc-2023",
+      "website": "https://www.nft.nyc/",
+      "chains": [
+        "ethereum"
+      ],
+      "categories": [
+        "collectibles"
+      ]
+    }
+  ],
+  "page": 1384,
+  "pageCount": 1384,
+  "resultCount": 13832,
+  "resultsPerPage": 10
+}
