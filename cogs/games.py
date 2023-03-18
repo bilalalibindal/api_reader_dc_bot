@@ -1,18 +1,8 @@
 import asyncio
-import discord
-from discord import app_commands
 from discord.ext import commands
-import DiscordUtils
-from discord.ui import Button, View
-import sqlite3
-from discord.utils import get
-import os
-import google_auth_oauthlib.flow
-import googleapiclient.discovery
-import googleapiclient.errors
 import psycopg2
 from random import randint as rand
-from discord import Permissions
+
 
 
 class BombGame(commands.Cog):
