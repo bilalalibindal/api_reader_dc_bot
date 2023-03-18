@@ -1,14 +1,17 @@
 import discord
+import DiscordUtils
 from discord.ui import Button, View
 from discord.ext import commands
 from discord import app_commands
+import sqlite3
+from discord.utils import get
 import os
 import psycopg2
 import asyncio
 import random
 import sys
 
-sys.path.append('C:/Users/bilal/Desktop/PYTHON/discordBotPrototype/cogs')
+sys.path.append('/path/to/cogs')
 from games import BombGame
 
 

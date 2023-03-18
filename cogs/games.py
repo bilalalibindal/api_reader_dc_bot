@@ -1,8 +1,13 @@
 import asyncio
+import discord
+from discord import app_commands
 from discord.ext import commands
+import DiscordUtils
+from discord.ui import Button, View
+import os
 import psycopg2
 from random import randint as rand
-
+from discord import Permissions
 
 
 class BombGame(commands.Cog):
