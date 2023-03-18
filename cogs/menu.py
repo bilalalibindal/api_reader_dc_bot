@@ -11,7 +11,8 @@ import asyncio
 import random
 import sys
 
-sys.path.append('/path/to/cogs')
+cogs_path = os.path.join(os.getcwd(), 'cogs')
+sys.path.append(cogs_path)
 from games import BombGame
 
 
