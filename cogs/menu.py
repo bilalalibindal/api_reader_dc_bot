@@ -61,6 +61,7 @@ class BombGameMenu(discord.ui.View):
             await interaction.response.send_message(content=f"BOMB GAME HAS BEEN STARTED\n\n"
                                                             f"**Moderator: **{user.mention}")
             self.bot.is_bomb_game_active = True  # Set bomb game as active.
+            random.shuffle(self.bot.players)
             await self.game.start_round()
         # If user has not necessary role, tell him that you can't use this button.
         else:
