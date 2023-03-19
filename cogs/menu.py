@@ -57,9 +57,10 @@ class BombGameMenu(discord.ui.View):
     async def start(self, interaction: discord.Interaction, button: discord.ui.Button):
         user = interaction.user
         if "ADMIN" in [role.name for role in user.roles]:
+            embed = discord.Embed(title=f"💣🧨 BOMB GAME STARTED 🧨💣",
+                                  description=f"\n<@&1015663942091157647>\n\n**`Moderator:`** {user.mention}")
             await interaction.message.delete()
-            await interaction.response.send_message(content=f"BOMB GAME HAS BEEN STARTED\n\n"
-                                                            f"**Moderator: **{user.mention}")
+            await interaction.response.send_message(embed=embed)
             self.bot.is_bomb_game_active = True  # Set bomb game as active.
             random.shuffle(self.bot.players)
             await self.game.start_round()
@@ -84,9 +85,9 @@ class Menu(commands.Cog):
         self.bot.bomb_game_channel = interaction.channel_id
         self.bombgame.max_player = max_players  # Define max_player count to check it.
         self.bot.players = []
-        embed = discord.Embed(title=f" REGISTER ",
+        embed = discord.Embed(title=f"💥 BOMB GAME 💥",
                               description="➥ **Click to '✅Join' button to enter Bomb Game**\n"
-                                          f"Max Player: {max_players}")
+                                          f"**`Max Players:`** **{max_players}**")
         await interaction.response.send_message(embed=embed, view=self.bombgame)
 
 
