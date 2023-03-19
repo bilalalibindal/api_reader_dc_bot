@@ -45,9 +45,10 @@ class BombGame(commands.Cog):
             user = await self.bot.fetch_user(self.bomber)
             await channel.set_permissions(user, send_messages=False)
             self.bot.bomb_game_code = rand(1000, 9999)
-            await channel.send(f"\n💥 💥 💥\n")
-            await channel.send(f"\n☠️ 🪦 <@{self.bomber}> 🪦  ☠️\n")
             self.bot.players.remove(self.bomber)
+            await channel.send(f"\n💥 💥 💥\n\n\n☠️ 🪦 <@{self.bomber}> 🪦  ☠️\n"
+                               f"\n**`Alive:`** {len(self.players)}")
+
             user = await self.bot.fetch_user(self.bomber)
             await channel.set_permissions(user, send_messages=False)
             if len(self.bot.players) > 1:
