@@ -15,6 +15,7 @@ class MyBot(commands.Bot):
         self.bomb_game_channel = 0
         self.bomb_game_code = 0
         self.players = []
+        self.bomber = 0
 
     async def setup_hook(self):
         self.session = aiohttp.ClientSession()

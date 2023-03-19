@@ -12,18 +12,17 @@ from discord import Permissions
 class BombGame(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.bomber = 0
 
     async def Bomb_Game_exe(self):
         if self.bot.is_bomb_game_active:
             channel = await self.bot.fetch_channel(self.bot.bomb_game_channel)
             bomber = rand(0, len(self.bot.players) - 1)
             self.bot.bomb_game_code = rand(1000, 9999)
-            self.bomber = self.bot.players[bomber]
-            user = await self.bot.fetch_user(self.bomber)
+            self.bot.bomber = self.bot.players[bomber]
+            user = await self.bot.fetch_user(self.bot.bomber)
             await channel.set_permissions(user, send_messages=True)
             await channel.send(
-                f"💣🧨 <@{self.bomber}> 🧨💣\n**Defuse the bomb**\n\n**`Code:`** : **{self.bot.bomb_game_code}**")
+                f"💣🧨 <@{self.bot.bomber}> 🧨💣\n\n**Defuse the bomb**\n\n**`Code:`** : **{self.bot.bomb_game_code}**")
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -33,7 +32,7 @@ class BombGame(commands.Cog):
                     channel = await self.bot.fetch_channel(self.bot.bomb_game_channel)
                     user = message.author
                     await channel.set_permissions(user, send_messages=False)
-                    await message.channel.send(f"🕵️ <@{self.bomber}> defused the bomb")
+                    await message.channel.send(f"🕵️ <@{self.bot.bomber}> defused the bomb\n")
                     await self.Bomb_Game_exe()
 
     async def start_round(self):
@@ -41,15 +40,15 @@ class BombGame(commands.Cog):
         if len(self.bot.players) > 1:
             await channel.send(f"New Round has been started!")
             await self.Bomb_Game_exe()
-            await asyncio.sleep(rand(15, 30))
-            user = await self.bot.fetch_user(self.bomber)
-            await channel.set_permissions(user, send_messages=False)
+            await asyncio.sleep(rand(15, 35))
             self.bot.bomb_game_code = rand(1000, 9999)
-            self.bot.players.remove(self.bomber)
-            await channel.send(f"\n💥 💥 💥\n\n\n☠️ 🪦 <@{self.bomber}> 🪦  ☠️\n"
-                               f"\n**`Alive:`** {len(self.players)}")
+            user = await self.bot.fetch_user(self.bot.bomber)
+            await channel.set_permissions(user, send_messages=False)
+            self.bot.players.remove(self.bot.bomber)
+            await channel.send(f"\n💥 💥 💥\n\n\n☠️ 🪦 <@{self.bot.bomber}> 🪦  ☠️\n"
+                               f"\n**`Alive:`** {len(self.bot.players)}")
 
-            user = await self.bot.fetch_user(self.bomber)
+            user = await self.bot.fetch_user(self.bot.bomber)
             await channel.set_permissions(user, send_messages=False)
             if len(self.bot.players) > 1:
                 await channel.send(f"⌛ Next Round Will Start in 3 Seconds ⏳")
