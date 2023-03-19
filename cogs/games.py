@@ -48,9 +48,6 @@ class BombGame(commands.Cog):
             await channel.send(f"\n💥 💥 💥")
             await channel.send(f"☠️ 🪦 <@{self.bot.bomber}> 🪦  ☠️\n"
                                f"\n**`Alives:`** **{len(self.bot.players)}**")
-
-            user = await self.bot.fetch_user(self.bot.bomber)
-            await channel.set_permissions(user, send_messages=False)
             if len(self.bot.players) > 1:
                 await channel.send(f"⌛ Next Round Will Start in 3 Seconds ⏳")
                 await asyncio.sleep(3)
