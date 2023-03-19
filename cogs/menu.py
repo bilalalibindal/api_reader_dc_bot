@@ -22,83 +22,23 @@ class BombGameMenu(discord.ui.View):
         super().__init__(timeout=None)
         self.game = BombGame(bot)
         self.bot = bot  # Define bot instance to use anywhere
-        self.conn = self.connect_db()  # Define database connection to use anywhere
-        self.player_count = 0  # Player count who joined bomb game.
-
-    # Connect to database
-    def connect_db(self):
-        conn = psycopg2.connect(
-            host="localhost",
-            database="Deep Dapp",
-            user="postgres",
-            password="19070900180.Seksen",
-            port="5432"
-        )
-        return conn
-
-    # Create a table inside of database with specific name
-    def create_db_table(self, table_name: str):
-        cursor = self.conn.cursor()
-        with self.conn:
-            cursor.execute(f'CREATE TABLE IF NOT EXISTS {table_name}(name TEXT, id TEXT)')
-            self.conn.commit()
-
-    def delete_db_table(self, table_name: str):
-        cursor = self.conn.cursor()
-        with self.conn:
-            cursor.execute(f'DROP TABLE IF EXISTS {table_name}')
-
-    # Search specific data in specific table name
-    def search_data_in_database(self, table, data, user_id):
-        cursor = self.conn.cursor()
-        with self.conn:
-            search_command = "SELECT {} FROM {} WHERE id = '{}' "
-            cursor.execute(search_command.format(data, table, user_id))
-            result = cursor.fetchone()
-            self.conn.commit()
-            return result
-
-    # Get count of users
-    def user_count_of_database(self, table):
-        cursor = self.conn.cursor()
-        with self.conn:
-            cursor.execute(f'SELECT COUNT(*) FROM {table}')
-            count = cursor.fetchone()[0]
-        return count
-
-    # With this function, register new user to database and giving fresh datas to them (data: coin amount, message amount, etc.).
-    def register_to_database(self, user_name, user_id):
-        cursor = self.conn.cursor()
-        with self.conn:
-            cursor.execute(
-                f"INSERT INTO bombgame(id,name) VALUES ('{user_id}','{user_name}')")
-            self.conn.commit()
-
-    def get_player_list(self):
-        cursor = self.conn.cursor()
-        with self.conn:
-            cursor.execute('SELECT id FROM bombgame')
-            self.bot.players = [row[0] for row in cursor.fetchall()]
-            random.shuffle(self.bot.players)
-            self.conn.commit()
+        self.max_player = 0  # Player count who joined bomb game.
 
     # Create a register button to database, called as "Join".
     @discord.ui.button(label="Join", style=discord.ButtonStyle.green, emoji="✅", custom_id="join")
     async def join(self, interaction: discord.Interaction, button: discord.ui.Button):
         user = interaction.user  # Get username who clicked the button.
-        table = "bombgame"  # Table name we create in database.
-        player_count = self.user_count_of_database(table=table)  # Get player count from database table.
+        player_count = len(self.bot.players)  # Get player count from list.
         # if user already joined and registered to database table, tell him that with await function.
-        if self.search_data_in_database(table="bombgame", user_id=user.id, data="*") != None:
+        if user.id in self.bot.players:
             await interaction.response.send_message(content=f"{user.mention} You already joined!",
                                                     ephemeral=True)
-
         # if player count has not reach to max player yet.
-        if player_count < self.player_count:
+        if player_count < self.max_player:
             # if user not joined or registered to database table, tell him that with await function.
-            if self.search_data_in_database(table="bombgame", user_id=user.id, data="*") == None:
+            if user.id not in self.bot.players:
                 # Register user to database who clicked to button.
-                self.register_to_database(user_name=user, user_id=user.id)
+                self.bot.players.append(user.id)
                 # Is not possible to use response method for same condition.
                 # Should use followup for one of them.
                 # Information messages below.
@@ -121,7 +61,6 @@ class BombGameMenu(discord.ui.View):
             await interaction.response.send_message(content=f"BOMB GAME HAS BEEN STARTED\n\n"
                                                             f"**Moderator: **{user.mention}")
             self.bot.is_bomb_game_active = True  # Set bomb game as active.
-            self.get_player_list()
             await self.game.start_round()
         # If user has not necessary role, tell him that you can't use this button.
         else:
@@ -133,7 +72,6 @@ class BombGameMenu(discord.ui.View):
 class Menu(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
-        self.register_channel_id = 1053656627632414790
         self.bombgame = BombGameMenu(bot)  # Define the class to put buttons we created for bomb game menu.
 
     # This is bombgame_menu command.
@@ -143,9 +81,8 @@ class Menu(commands.Cog):
     # /bombgame_menu max_players = ?.
     async def bombgame_menu(self, interaction: discord.Interaction, max_players: int) -> None:
         self.bot.bomb_game_channel = interaction.channel_id
-        self.bombgame.player_count = max_players  # Define max_player count to check it.
-        self.bombgame.delete_db_table("bombgame")
-        self.bombgame.create_db_table("bombgame")
+        self.bombgame.max_player = max_players  # Define max_player count to check it.
+        self.bot.players = []
         embed = discord.Embed(title=f" REGISTER ",
                               description="➥ **Click to '✅Join' button to enter Bomb Game**\n"
                                           f"Max Player: {max_players}")

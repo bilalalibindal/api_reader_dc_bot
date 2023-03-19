@@ -7,10 +7,14 @@ import aiohttp
 class MyBot(commands.Bot):
     def __init__(self):
         self.discord_server = 1015168172753702912
-        #self.application_id = 1004415803703177247
+        # self.application_id = 1004415803703177247
         super().__init__(command_prefix=".",
                          intents=discord.Intents.all(),
                          application_id=1004415803703177247)
+        self.is_bomb_game_active = False  # We can use this bool in any script.
+        self.bomb_game_channel = 0
+        self.bomb_game_code = 0
+        self.players = []
 
     async def setup_hook(self):
         self.session = aiohttp.ClientSession()

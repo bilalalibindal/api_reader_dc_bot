@@ -5,7 +5,6 @@ from discord.ext import commands
 import DiscordUtils
 from discord.ui import Button, View
 import os
-import psycopg2
 from random import randint as rand
 from discord import Permissions
 
@@ -15,29 +14,6 @@ class BombGame(commands.Cog):
         self.bot = bot
         self.bomber = 0
 
-    def connect_db(self):
-        conn = psycopg2.connect(
-            host="localhost",
-            database="Deep Dapp",
-            user="postgres",
-            password="19070900180.Seksen",
-            port="5432"
-        )
-        return conn
-
-    def create_db_table(self, table_name: str):
-        conn = self.connect_db()
-        cursor = conn.cursor()
-        with conn:
-            cursor.execute(f'CREATE TABLE IF NOT EXISTS {table_name}(id TEXT)')
-            conn.commit()
-
-    def delete_user(self, user_id: str):
-        conn = self.connect_db()
-        cursor = conn.cursor()
-        with conn:
-            cursor.execute(f"DELETE FROM bombgame WHERE id = '{user_id}'")
-            conn.commit()
 
     async def Bomb_Game_exe(self):
         if self.bot.is_bomb_game_active:
