@@ -78,7 +78,7 @@ class Menu(commands.Cog):
     # This is bombgame_menu command.
     @app_commands.command(name="bombgame_menu",
                           description="Create a Bomb Game Register Menu and choose player player_count.")
-    @commands.has_permissions(administrator=True)
+    @has_permissions(administrator=True)
     # /bombgame_menu max_players = ?.
     async def bombgame_menu(self, interaction: discord.Interaction, max_players: int) -> None:
         self.bot.bomb_game_channel = interaction.channel_id
