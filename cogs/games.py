@@ -45,8 +45,9 @@ class BombGame(commands.Cog):
             user = await self.bot.fetch_user(self.bot.bomber)
             await channel.set_permissions(user, send_messages=False)
             self.bot.players.remove(self.bot.bomber)
-            await channel.send(f"\n💥 💥 💥\n\n\n☠️ 🪦 <@{self.bot.bomber}> 🪦  ☠️\n"
-                               f"\n**`Alive:`** {len(self.bot.players)}")
+            await channel.send(f"\n💥 💥 💥")
+            await channel.send(f"☠️ 🪦 <@{self.bot.bomber}> 🪦  ☠️\n"
+                               f"\n**`Alives:`** **{len(self.bot.players)}**")
 
             user = await self.bot.fetch_user(self.bot.bomber)
             await channel.set_permissions(user, send_messages=False)
