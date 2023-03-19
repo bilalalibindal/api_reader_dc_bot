@@ -14,7 +14,6 @@ class BombGame(commands.Cog):
         self.bot = bot
         self.bomber = 0
 
-
     async def Bomb_Game_exe(self):
         if self.bot.is_bomb_game_active:
             channel = await self.bot.fetch_channel(self.bot.bomb_game_channel)
@@ -23,7 +22,8 @@ class BombGame(commands.Cog):
             self.bomber = self.bot.players[bomber]
             user = await self.bot.fetch_user(self.bomber)
             await channel.set_permissions(user, send_messages=True)
-            await channel.send(f"💣🧨 <@{self.bomber}> 🧨💣\n\n**`Code:`** : **{self.bot.bomb_game_code}**")
+            await channel.send(
+                f"💣🧨 <@{self.bomber}> 🧨💣\n**Defuse the bomb**\n\n**`Code:`** : **{self.bot.bomb_game_code}**")
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -33,7 +33,7 @@ class BombGame(commands.Cog):
                     channel = await self.bot.fetch_channel(self.bot.bomb_game_channel)
                     user = message.author
                     await channel.set_permissions(user, send_messages=False)
-                    await message.channel.send(f"🕵️ <@{self.bomber}> refused the bomb")
+                    await message.channel.send(f"🕵️ <@{self.bomber}> defused the bomb")
                     await self.Bomb_Game_exe()
 
     async def start_round(self):
@@ -51,7 +51,7 @@ class BombGame(commands.Cog):
             user = await self.bot.fetch_user(self.bomber)
             await channel.set_permissions(user, send_messages=False)
             if len(self.bot.players) > 1:
-                await channel.send(f"Next Round Will Start in 3 Seconds")
+                await channel.send(f"⌛ Next Round Will Start in 3 Seconds ⏳")
                 await asyncio.sleep(3)
                 await self.start_round()
             else:
