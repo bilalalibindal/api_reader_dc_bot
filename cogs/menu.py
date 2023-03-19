@@ -86,7 +86,7 @@ class Menu(commands.Cog):
         self.bombgame.max_player = max_players  # Define max_player count to check it.
         self.bot.players = []
         embed = discord.Embed(title=f"💥 BOMB GAME 💥",
-                              description="➥ **Click to '✅Join' button to enter Bomb Game**\n"
+                              description="➥ **Click to '✅Join' button to enter Bomb Game**\n\n"
                                           f"**`Max Players:`** **{max_players}**")
         await interaction.response.send_message(embed=embed, view=self.bombgame)
 
