@@ -23,7 +23,7 @@ class BombGame(commands.Cog):
             self.bomber = self.bot.players[bomber]
             user = await self.bot.fetch_user(self.bomber)
             await channel.set_permissions(user, send_messages=True)
-            await channel.send(f"🧨 <@{self.bomber}> 🧨\n\n**Code: {self.bot.bomb_game_code}**")
+            await channel.send(f"💣🧨 <@{self.bomber}> 🧨💣\n\n**`Code:`** : **{self.bot.bomb_game_code}**")
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -33,7 +33,7 @@ class BombGame(commands.Cog):
                     channel = await self.bot.fetch_channel(self.bot.bomb_game_channel)
                     user = message.author
                     await channel.set_permissions(user, send_messages=False)
-                    await message.channel.send("Bomb has been refused")
+                    await message.channel.send(f"🕵️ <@{self.bomber}> refused the bomb")
                     await self.Bomb_Game_exe()
 
     async def start_round(self):
@@ -45,8 +45,8 @@ class BombGame(commands.Cog):
             user = await self.bot.fetch_user(self.bomber)
             await channel.set_permissions(user, send_messages=False)
             self.bot.bomb_game_code = rand(1000, 9999)
-            await channel.send(f"💥 💥 💥")
-            await channel.send(f"☠️ 🪦 <@{self.bomber}> 🪦  ☠️")
+            await channel.send(f"\n💥 💥 💥\n")
+            await channel.send(f"\n☠️ 🪦 <@{self.bomber}> 🪦  ☠️\n")
             self.bot.players.remove(self.bomber)
             user = await self.bot.fetch_user(self.bomber)
             await channel.set_permissions(user, send_messages=False)
