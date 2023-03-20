@@ -21,8 +21,8 @@ class BombGame(commands.Cog):
             self.bot.bomber = self.bot.players[bomber]
             user = await self.bot.fetch_user(self.bot.bomber)
             await channel.set_permissions(user, send_messages=True)
-            embed = discord.Embed(title=f"💣🧨 <@{self.bot.bomber}> 🧨💣",
-                                  description=f"n**Defuse the bomb**\n\n**`Code:`** **{self.bot.bomb_game_code}**",
+            embed = discord.Embed(title=f"💣🧨 **Defuse The Bomb** 🧨💣",
+                                  description=f"\n<@{self.bot.bomber}>\n\n**`Code:`** **{self.bot.bomb_game_code}**",
                                   color=0x1f8b4c)
 
             await channel.send(embed=embed)
@@ -41,7 +41,7 @@ class BombGame(commands.Cog):
     async def start_round(self):
         channel = await self.bot.fetch_channel(self.bot.bomb_game_channel)
         if len(self.bot.players) > 1:
-            await channel.send(f"New Round has been started!")
+            await channel.send(f"**New Round has been started!**")
             await self.Bomb_Game_exe()
             await asyncio.sleep(rand(15, 35))
             self.bot.bomb_game_code = rand(1000, 9999)
