@@ -21,8 +21,11 @@ class BombGame(commands.Cog):
             self.bot.bomber = self.bot.players[bomber]
             user = await self.bot.fetch_user(self.bot.bomber)
             await channel.set_permissions(user, send_messages=True)
-            await channel.send(
-                f"💣🧨 <@{self.bot.bomber}> 🧨💣\n\n**Defuse the bomb**\n\n**`Code:`** **{self.bot.bomb_game_code}**")
+            embed = discord.Embed(title=f"💣🧨 <@{self.bot.bomber}> 🧨💣",
+                                  description=f"n**Defuse the bomb**\n\n**`Code:`** **{self.bot.bomb_game_code}**",
+                                  color=0x1f8b4c)
+
+            await channel.send(embed=embed)
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -45,10 +48,11 @@ class BombGame(commands.Cog):
             user = await self.bot.fetch_user(self.bot.bomber)
             await channel.set_permissions(user, send_messages=False)
             self.bot.players.remove(self.bot.bomber)
-            embed = discord.Embed(title=f"💥 💥 💥", description=f"☠️ 🪦 <@{self.bot.bomber}> 🪦  ☠️\n"
-                                                                 f"\n**`Alives:`** **{len(self.bot.players)}**")
+            embed = discord.Embed(title=f"💥 💥 **BOOM** 💥 💥", description=f"\n☠️ 🪦 <@{self.bot.bomber}> 🪦  ☠️\n"
+                                                                             f"\n**`Alives:`** **{len(self.bot.players)}**",
+                                  color=0xe74c3c)
             await channel.send(embed=embed)
-            
+
             if len(self.bot.players) > 1:
                 await channel.send(f"⌛ **Next Round Will Start in 3 Seconds** ⏳")
                 await asyncio.sleep(3)
