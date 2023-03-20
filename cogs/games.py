@@ -22,7 +22,7 @@ class BombGame(commands.Cog):
             user = await self.bot.fetch_user(self.bot.bomber)
             await channel.set_permissions(user, send_messages=True)
             await channel.send(
-                f"💣🧨 <@{self.bot.bomber}> 🧨💣\n\n**Defuse the bomb**\n\n**`Code:`** : **{self.bot.bomb_game_code}**")
+                f"💣🧨 <@{self.bot.bomber}> 🧨💣\n\n**Defuse the bomb**\n\n**`Code:`** **{self.bot.bomb_game_code}**")
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -45,11 +45,12 @@ class BombGame(commands.Cog):
             user = await self.bot.fetch_user(self.bot.bomber)
             await channel.set_permissions(user, send_messages=False)
             self.bot.players.remove(self.bot.bomber)
-            await channel.send(f"\n💥 💥 💥")
-            await channel.send(f"☠️ 🪦 <@{self.bot.bomber}> 🪦  ☠️\n"
-                               f"\n**`Alives:`** **{len(self.bot.players)}**")
+            embed = discord.Embed(title=f"💥 💥 💥", description=f"☠️ 🪦 <@{self.bot.bomber}> 🪦  ☠️\n"
+                                                                 f"\n**`Alives:`** **{len(self.bot.players)}**")
+            await channel.send(embed=embed)
+            
             if len(self.bot.players) > 1:
-                await channel.send(f"⌛ Next Round Will Start in 3 Seconds ⏳")
+                await channel.send(f"⌛ **Next Round Will Start in 3 Seconds** ⏳")
                 await asyncio.sleep(3)
                 await self.start_round()
             else:
