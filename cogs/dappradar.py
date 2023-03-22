@@ -15,6 +15,7 @@ class dappradar(commands.Cog):
                          'fVI0vvwfkEb2AA7DlCppvwcrLSsAMBPs', 'arZjtkqPVeNbc7L9njg6S1YGFXwVSTvJ',
                          'pR8kMTOmBQRM3MsVhr0G2l6TQANqi1Uv', 'bLeFkKwLOEOs1ZK75HsuVU80R52ToXsu',
                          'HxWWgpxjq6QCmyFrOs68b82HLv0jMZqX']
+        self.data = self.read_file("new_dapps_id.json")
 
     # With this function getting project infos from dapp radar api.
     # with page_count parameter we access to last page to se new projects.
@@ -71,15 +72,15 @@ class dappradar(commands.Cog):
             return False
 
     def add_new_id(self, id):
-        self.bot.data2 = self.read_file("new_dapps_id.json")
+        self.data = self.read_file("new_dapps_id.json")
         new_id = {"dappId": id}
-        self.bot.data2["results"].append(new_id)
+        self.data["results"].append(new_id)
 
     def update_new_id(self):
-        while len(self.bot.data2["results"]) >= 20:
-            self.bot.data2["results"].pop(0)
+        while len(self.data["results"]) >= 20:
+            self.data["results"].pop(0)
         with open("new_dapps_id.json", "w") as file:
-            json.dump(self.bot.data2, file)
+            json.dump(self.data, file)
 
     # data = ['name', 'description', 'logo', 'link', 'website', 'chains', 'categories']
     def get_dapp_data(self, dapp_id):
