@@ -70,7 +70,7 @@ class atomichub(commands.Cog):
 
                 return url, img, socials
 
-    def collection_info(self, collection_name, get):
+    def collection_info(self, collection_name, get: str):
         media = ['twitter', 'medium', 'facebook', 'github', 'discord', 'youtube', 'telegram']
         data = self.get_collection_data(collection_name)
         url = data[0]
@@ -82,8 +82,8 @@ class atomichub(commands.Cog):
             return img
         elif get in media:
             try:
-                socials[f"{socials.index(get)}"]
-                return socials[f"{socials.index(get)}"]
+                get_index = socials.index(f"{get}")
+                return socials[get_index]
             except KeyError:
                 return ""
 
