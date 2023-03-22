@@ -82,8 +82,8 @@ class atomichub(commands.Cog):
             return img
         elif get in media:
             try:
-                socials[f"{get}"]
-                return socials[f"{get}"]
+                socials[f"{socials.index(get)}"]
+                return socials[f"{socials.index(get)}"]
             except KeyError:
                 return ""
 
