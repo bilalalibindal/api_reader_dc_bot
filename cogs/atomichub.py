@@ -84,7 +84,7 @@ class atomichub(commands.Cog):
             try:
                 get_index = socials.index(f"{get}")
                 return socials[get_index]
-            except KeyError:
+            except KeyError or ValueError:
                 return ""
 
     async def send(self):
