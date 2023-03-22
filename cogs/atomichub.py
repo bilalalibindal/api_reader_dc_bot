@@ -81,11 +81,12 @@ class atomichub(commands.Cog):
         elif get == "img":
             return img
         elif get in media:
-            try:
-                get_index = socials.index(f"{get}")
-                return socials[get_index]
-            except KeyError or ValueError:
-                return ""
+            if get in socials:
+                try:
+                    get_index = socials.index(f"{get}")
+                    return socials[get_index]
+                except KeyError or ValueError:
+                    return ""
 
     async def send(self):
         await self.bot.wait_until_ready()
