@@ -7,7 +7,6 @@ import asyncio
 
 class dappradar(commands.Cog):
     def __init__(self, bot):
-        self.data = self.read_file("new_dapps_id.json")
         self.bot = bot
         self.code = 0
         self.api_keys = ['zZsNwI6JuhGSCfogmNrflqvw10ysvZBS', 'C8PpeLAUGkNXFFotMwsuS5Pa4PDoF1PN',
@@ -72,15 +71,15 @@ class dappradar(commands.Cog):
             return False
 
     def add_new_id(self, id):
-        self.data = self.read_file("new_dapps_id.json")
+        self.bot.data2 = self.read_file("new_dapps_id.json")
         new_id = {"dappId": id}
-        self.data["results"].append(new_id)
+        self.bot.data2["results"].append(new_id)
 
     def update_new_id(self):
-        while len(self.data["results"]) >= 20:
-            self.data["results"].pop(0)
+        while len(self.bot.data2["results"]) >= 20:
+            self.bot.data2["results"].pop(0)
         with open("new_dapps_id.json", "w") as file:
-            json.dump(self.data, file)
+            json.dump(self.bot.data2, file)
 
     # data = ['name', 'description', 'logo', 'link', 'website', 'chains', 'categories']
     def get_dapp_data(self, dapp_id):

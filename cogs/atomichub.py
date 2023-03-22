@@ -9,7 +9,7 @@ class atomichub(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.api_link = "https://wax.api.atomicassets.io/atomicassets/v1/collections?page=1&limit=10&order=desc&sort=created"
-        self.data = self.read_file("atomic_new.json")
+
 
     def get_api(self):
         response = requests.get(self.api_link)
@@ -23,16 +23,16 @@ class atomichub(commands.Cog):
         return data
 
     def add_new_collection(self, collection_name: str):
-        data_copy = self.data.copy()  # self.data'nın bir kopyası oluşturulur
+        data_copy = self.bot.data.copy()  # self.data'nın bir kopyası oluşturulur
         new_collection = {"collection_name": collection_name}
         data_copy["data"].insert(0, new_collection)
-        self.data = data_copy  # self.data kopya ile güncellenir
+        self.bot.data = data_copy  # self.data kopya ile güncellenir
 
     def update_new_collection(self):
-        while len(self.data["data"]) >= 20:
-            self.data["data"].pop()
+        while len(self.bot.data["data"]) >= 20:
+            self.bot.data["data"].pop()
         with open("atomic_new.json", "w") as file:
-            json.dump(self.data, file)
+            json.dump(self.bot.data, file)
 
     def get_collection_names(self, file):
         data = self.read_file(file=f"{file}")

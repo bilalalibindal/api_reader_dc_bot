@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import os
 import aiohttp
+import json
 
 
 class MyBot(commands.Bot):
@@ -16,6 +17,13 @@ class MyBot(commands.Bot):
         self.bomb_game_code = 0
         self.players = []
         self.bomber = 0
+        self.data = self.read_file("atomic_new.json")
+        self.data2 = self.read_file("new_dapps_id.json")
+
+    def read_file(self, file):
+        with open(f"{file}") as file:
+            data = json.load(file)
+        return data
 
     async def setup_hook(self):
         self.session = aiohttp.ClientSession()
