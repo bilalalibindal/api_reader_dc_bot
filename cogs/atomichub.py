@@ -124,7 +124,7 @@ class atomichub(commands.Cog):
                                     inline=False)
                     for media in medias:
                         media_link = self.collection_info(collection_name=name, get=f"{media}")
-                        if media_link != "":
+                        if media_link != "" and media_link != "None" and media_link != None:
                             embed.add_field(name=f"{media}", value=media_link, inline=False)
                     await channel.send(embed=embed)
             self.update_new_collection()
