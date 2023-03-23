@@ -17,7 +17,8 @@ class MyBot(commands.Bot):
         self.bomb_game_code = 0
         self.players = []
         self.bomber = 0
-
+        self.atomic_data = []
+        
     async def setup_hook(self):
         self.session = aiohttp.ClientSession()
         for filename in os.listdir('./cogs'):
